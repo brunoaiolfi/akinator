@@ -5,15 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import com.example.akinator.Modules.Akinator.Models.QuestionModel
-import com.example.akinator.Modules.Akinator.Models.SessionModel
-import com.example.akinator.Modules.Akinator.Services.AkinatorService
 import com.example.akinator.databinding.ActivityMainBinding
-import com.example.akinator.infra.RetrofitClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.akinator.Modules.Akinator.Views.Questions.QuestionsActivity
@@ -53,7 +45,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         if (v?.id == R.id.btn_start) {
-            return viewModel.startGame();
+            return viewModel.handleStartGame();
         }
     }
 }

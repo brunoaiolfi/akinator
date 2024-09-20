@@ -1,20 +1,19 @@
 package com.example.akinator
 
-import android.content.Intent
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.akinator.Modules.Akinator.Models.SessionModel
+import com.example.akinator.Modules.Akinator.Repository.QuestionsRepository
 import com.example.akinator.Modules.Akinator.Services.AkinatorService
 import com.example.akinator.infra.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.activity.viewModels
 
 class MainActivityViewModel : ViewModel() {
-    private val remote = RetrofitClient.createService(AkinatorService::class.java);
+
+    private val repository = QuestionsRepository;
 
     // LiveData to notify the UI about toast messages
     private val _toastMessage = MutableLiveData<String>()
@@ -31,23 +30,16 @@ class MainActivityViewModel : ViewModel() {
         _navigateToSecondActivity.value = false
     }
 
-    public fun startGame() {
-        val call: Call<SessionModel> = remote.start()
-        call.enqueue(object : Callback<SessionModel> {
-            override fun onResponse(call: Call<SessionModel>, response: Response<SessionModel>) {
-                if (!response.isSuccessful) {
-                    // Update LiveData when there's an error
-                    _toastMessage.value = "Erro ao iniciar o jogo!"
-                    return;
-                }
-
+    public fun handleStartGame() {
+        repository.startGame(
+            cb = { session ->
+                // Update LiveData when there's a successful response
                 navigate()
-            }
-
-            override fun onFailure(call: Call<SessionModel>, t: Throwable) {
+            },
+            cbError = {
                 // Update LiveData when there's an error
-                _toastMessage.value = "Erro ao iniciar o jogo!"
+                _toastMessage.value = "Error starting the game"
             }
-        })
+        )
     }
 }
