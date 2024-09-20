@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Akinator"
         tools:targetApi="31">
         <activity
+            android:name=".Modules.Akinator.Views.Questions.QuestionsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
