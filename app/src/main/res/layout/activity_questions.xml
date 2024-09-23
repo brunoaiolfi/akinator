@@ -7,7 +7,7 @@
     tools:context=".Modules.Akinator.Views.Questions.QuestionsActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txt_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
@@ -24,7 +24,7 @@
         android:text="Sim"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_question" />
 
     <Button
         android:id="@+id/button2"

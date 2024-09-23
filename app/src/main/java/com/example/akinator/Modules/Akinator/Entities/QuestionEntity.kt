@@ -1,8 +1,9 @@
-package com.example.akinator.Modules.Akinator.Models
+package com.example.akinator.Modules.Akinator.Entities
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-class QuestionModel {
+class QuestionEntity : Serializable {
     @SerializedName("question")
     var questionText: String = ""
 

@@ -8,12 +8,15 @@ import android.widget.Toast
 import com.example.akinator.databinding.ActivityMainBinding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.akinator.Modules.Akinator.Entities.SessionEntity
 import com.example.akinator.Modules.Akinator.Views.Questions.QuestionsActivity
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainActivityViewModel
+
+    private var session: SessionEntity = SessionEntity();
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +37,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
         })
 
+        viewModel.session.observe(this, Observer { session ->
+            session?.let {
+                this.session = it;
+            }
+        })
+
         viewModel.navigateToSecondActivity.observe(this, Observer { shouldNavigate ->
             if (shouldNavigate == true) {
                 val intent = Intent(this, QuestionsActivity::class.java)
+
+                // Pass the session
+                intent.putExtra("session", this.session);
+
                 startActivity(intent)
                 viewModel.navigationComplete()  // Reset the value after navigating
             }
