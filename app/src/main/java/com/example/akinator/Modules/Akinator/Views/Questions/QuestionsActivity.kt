@@ -7,6 +7,6 @@ import com.example.akinator.R
 class QuestionsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_questions2)
+        setContentView(R.layout.activity_questions)
     }
 }
