@@ -13,7 +13,25 @@ class QuestionsViewModel : ViewModel() {
     private val _session = MutableLiveData<SessionEntity>();
     val session: LiveData<SessionEntity> = _session;
 
+    private val _toastMessage = MutableLiveData<String>()
+    val toastMessage: LiveData<String> = _toastMessage
+
     fun setSession(session: SessionEntity) {
         _session.value = session;
+    }
+
+    fun handleAnswer(answer: Int) {
+        val session_id = _session.value?.sessionId ?: return;
+
+        repository.answer(session_id, answer, {
+            // Handle success
+            _session.value = _session.value?.copy(
+                question = it
+            )
+        }, {
+            // Handle error
+            _toastMessage.value = "Ocorreu um erro ao responder a pergunta"
+        })
+
     }
 }

@@ -1,5 +1,7 @@
 package com.example.akinator.Modules.Akinator.Repository
 
+import com.example.akinator.Modules.Akinator.Entities.Enums.Answer
+import com.example.akinator.Modules.Akinator.Entities.QuestionEntity
 import com.example.akinator.Modules.Akinator.Entities.SessionEntity
 import com.example.akinator.Modules.Akinator.Services.AkinatorService
 import com.example.akinator.infra.RetrofitClient
@@ -34,24 +36,24 @@ class QuestionsRepository {
             })
         }
 
-        fun getSession(id: Int, cb: (session: SessionEntity) -> Unit, cbError: () -> Unit) {
-            val call: Call<SessionEntity> = remote.continueSession(id);
+        fun answer(id: Int, answer: Int, cb: (question: QuestionEntity) -> Unit, cbError: () -> Unit) {
+            val call: Call<QuestionEntity> = remote.answer(id, AkinatorService.AnswerRequest(answer));
 
-            call.enqueue(object : Callback<SessionEntity> {
+            call.enqueue(object : Callback<QuestionEntity> {
                 override fun onResponse(
-                    call: Call<SessionEntity>,
-                    response: Response<SessionEntity>
+                    call: Call<QuestionEntity>,
+                    response: Response<QuestionEntity>
                 ) {
-                    val session = response.body();
+                    val question = response.body();
 
                     if (!response.isSuccessful || response.body() == null) {
-                        cbError();
+                        return cbError();
                     }
 
-                    cb(session!!);
+                    cb(question!!);
                 }
 
-                override fun onFailure(call: Call<SessionEntity>, t: Throwable) {
+                override fun onFailure(call: Call<QuestionEntity>, t: Throwable) {
                     // Update LiveData when there's an error
                     cbError();
                 }
