@@ -5,18 +5,25 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import com.example.akinator.databinding.ActivityMainBinding
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.akinator.Modules.Akinator.Entities.SessionEntity
 import com.example.akinator.Modules.Akinator.Views.Questions.QuestionsActivity
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+interface MainActivityProps {
+    fun showToast(message: String)
+    fun startGame(session: SessionEntity)
+}
+
+class MainActivity : AppCompatActivity(), View.OnClickListener, MainActivityProps {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var viewModel: MainActivityViewModel
-
-    private var session: SessionEntity = SessionEntity();
+    private val viewModel: MainActivityViewModel by viewModels {
+        MainActivityViewModelFactory(
+            application,
+            this
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,41 +31,28 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
-        binding.btnStart.setOnClickListener(this);
-
-        observers();
+        bindings();
     }
 
-    fun observers() {
-        viewModel.toastMessage.observe(this, Observer { message ->
-            message?.let {
-                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        viewModel.session.observe(this, Observer { session ->
-            session?.let {
-                this.session = it;
-            }
-        })
-
-        viewModel.navigateToSecondActivity.observe(this, Observer { shouldNavigate ->
-            if (shouldNavigate == true) {
-                val intent = Intent(this, QuestionsActivity::class.java)
-
-                // Pass the session
-                intent.putExtra("session", this.session);
-
-                startActivity(intent)
-                viewModel.navigationComplete()  // Reset the value after navigating
-            }
-        })
+    fun bindings() {
+        binding.btnStart.setOnClickListener(this);
     }
 
     override fun onClick(v: View?) {
         if (v?.id == R.id.btn_start) {
             return viewModel.handleStartGame();
         }
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun startGame(session: SessionEntity) {
+        val intent = Intent(this, QuestionsActivity::class.java)
+
+        intent.putExtra("session", session);
+
+        startActivity(intent)
     }
 }

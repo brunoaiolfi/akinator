@@ -13,7 +13,7 @@ class QuestionsRepository {
     companion object {
         private val remote = RetrofitClient.createService(AkinatorService::class.java);
 
-        fun startGame(cb: (SessionEntity) -> Unit, cbError: () -> Unit) {
+        fun startGame(cb: (SessionEntity) -> Unit, cbError: (message: String ) -> Unit) {
             val call: Call<SessionEntity> = remote.start()
 
             call.enqueue(object : Callback<SessionEntity> {
@@ -23,7 +23,7 @@ class QuestionsRepository {
                 ) {
                     val session = response.body();
                     if (!response.isSuccessful || response.body() == null) {
-                        cbError();
+                        return cbError("");
                     }
 
                     cb(session!!);
@@ -31,7 +31,7 @@ class QuestionsRepository {
 
                 override fun onFailure(call: Call<SessionEntity>, t: Throwable) {
                     // Update LiveData when there's an error
-                    cbError();
+                    cbError(t.message.toString());
                 }
             })
         }

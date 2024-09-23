@@ -1,42 +1,38 @@
 package com.example.akinator
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import com.example.akinator.Modules.Akinator.Entities.SessionEntity
 import com.example.akinator.Modules.Akinator.Repository.QuestionsRepository
+import androidx.lifecycle.ViewModelProvider
 
-class MainActivityViewModel : ViewModel() {
+class MainActivityViewModelFactory(
+    private val application: Application,
+    private val mainActivityProps: MainActivityProps
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return MainActivityViewModel(application, mainActivityProps) as T
+    }
+}
+
+class MainActivityViewModel(
+    application: Application,
+    private val mainActivityProps: MainActivityProps
+) :
+    AndroidViewModel(application) {
 
     private val repository = QuestionsRepository;
 
-    private val _toastMessage = MutableLiveData<String>()
-    val toastMessage: LiveData<String> = _toastMessage
-
-    private val _session = MutableLiveData<SessionEntity>()
-    val session: LiveData<SessionEntity> = _session;
-
-    private val _navigateToSecondActivity = MutableLiveData<Boolean>()
-    val navigateToSecondActivity: LiveData<Boolean> get() = _navigateToSecondActivity
-
-    fun navigate() {
-        _navigateToSecondActivity.value = true
-    }
-
-    fun navigationComplete() {
-        _navigateToSecondActivity.value = false
-    }
-
-    public fun handleStartGame() {
+    fun handleStartGame() {
         repository.startGame(
             cb = { session ->
                 // Update LiveData when there's a successful response
-                _session.value = session
-                navigate()
+                mainActivityProps.startGame(session)
             },
             cbError = {
                 // Update LiveData when there's an error
-                _toastMessage.value = "Error starting the game"
+                mainActivityProps.showToast("Error starting the game. ${it}")
             }
         )
     }
