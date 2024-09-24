@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import com.example.akinator.databinding.ActivityMainBinding
 import com.example.akinator.Modules.Akinator.Entities.SessionEntity
 import com.example.akinator.Modules.Akinator.Views.Questions.QuestionsActivity
@@ -32,8 +33,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainActivityProp
         setContentView(binding.root)
 
         bindings();
+        observers();
     }
 
+    fun observers() {
+        viewModel.isLoading.observe(this, Observer {
+            binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
+        })
+    }
     fun bindings() {
         binding.btnStart.setOnClickListener(this);
     }
