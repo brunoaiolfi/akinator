@@ -46,4 +46,7 @@
     <string name="StartGame">Jogar</string>
     <string name="Play">Jogar</string>
     <string name="akinator">Akinator</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="i_dont_know">Não sei</string>
 </resources>
