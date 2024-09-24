@@ -1,20 +1,29 @@
 package com.example.akinator.Modules.Akinator.Views.Questions
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.akinator.Modules.Akinator.Entities.SessionEntity
 import com.example.akinator.Modules.Akinator.Repository.QuestionsRepository
 
-class QuestionsViewModel : ViewModel() {
+class QuestionsViewModelFactory(
+    private val application: Application,
+    private val questionActivityProps: QuestionActivityProps
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return QuestionsViewModel(application, questionActivityProps) as T
+    }
+}
+
+class QuestionsViewModel(application: Application, private val questionsActivityProps: QuestionActivityProps) : AndroidViewModel(application) {
 
     private val repository = QuestionsRepository;
 
     private val _session = MutableLiveData<SessionEntity>();
     val session: LiveData<SessionEntity> = _session;
-
-    private val _toastMessage = MutableLiveData<String>()
-    val toastMessage: LiveData<String> = _toastMessage
 
     fun setSession(session: SessionEntity) {
         _session.value = session;
@@ -28,9 +37,9 @@ class QuestionsViewModel : ViewModel() {
             _session.value = _session.value?.copy(
                 question = it
             )
+
         }, {
-            // Handle error
-            _toastMessage.value = "Ocorreu um erro ao responder a pergunta"
+            questionsActivityProps.showToast("Ocorreu um erro ao responder a pergunta")
         })
 
     }
